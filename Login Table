@@ -1,0 +1,26 @@
+import pandas as pd
+import numpy as np
+
+def login_table(id_name_verified, id_password):
+    # Drop the 'Verified' column
+    id_name_verified.drop(columns=['Verified'], inplace=True)
+    
+    # Convert the NumPy array to a DataFrame and set the 'Id' column as the index
+    password_df = pd.DataFrame(id_password, columns=['Id', 'Password']).set_index('Id')
+    
+    # Set the 'Id' column as the index of the id_name_verified DataFrame for the merge
+    id_name_verified.set_index('Id', inplace=True)
+    
+    # Merge the DataFrames on the 'Id' index
+    id_name_verified['Password'] = password_df['Password']
+    
+    # Reset the index to bring back the 'Id' column
+    id_name_verified.reset_index(inplace=True)
+
+# Example usage
+id_name_verified = pd.DataFrame([[1, "JohnDoe", True], [2, "AnnFranklin", False]], columns=["Id", "Login", "Verified"])
+id_password = np.array([[1, 987340123], [2, 187031122]], np.int32)
+login_table(id_name_verified, id_password)
+
+# This will print the modified DataFrame
+print(id_name_verified)
